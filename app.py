@@ -104,7 +104,7 @@ def upload_file():
 
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             process_pdf(filename)
-            return send_file(os.path.join(app.config['UPLOAD_FOLDER'], filename.replace('.pdf', '.csv')))
+            return send_file(filename.replace('.pdf', '.csv'))
             # return redirect(url_for('uploaded_file',filename=filename))
     return '''
     <!doctype html>
