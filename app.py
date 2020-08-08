@@ -9,12 +9,12 @@ import os
 import collections
 from werkzeug.utils import secure_filename
 
-UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['FILENAME'] = ''
+app.config['UPLOAD_FOLDER'] = 'uploads'
+app.config['XML_FOLDER'] = 'xml_files'
+app.config['CSV_FOLDER'] = 'csv_files'
 
 defaultxpos = ['76.074', '85.272', '86.191']
 
@@ -44,8 +44,8 @@ def page_to_csv(purifieddict, category, region, usagetype):
 def process_pdf(filename):
 	filename = filename.replace('.pdf', '')
 	xml_file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename+'.xml')
-	pdf_file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename+'.pdf')
-	csv_file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename+'.csv')
+	pdf_file_path = os.path.join(app.config['XML_FOLDER'], filename+'.pdf')
+	csv_file_path = os.path.join(app.config['CSV_FOLDER'], filename+'.csv')
 	os.system('pdf2txt.py -o {} {}'.format(xml_file_path, pdf_file_path))
 	soup = BeautifulSoup(open('{}'.format(xml_file_path)).read())
 
@@ -109,7 +109,7 @@ def upload_file():
 
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             process_pdf(filename)
-            return send_file(os.path.join(app.config['UPLOAD_FOLDER'], filename.replace('.pdf', '')+'.csv'))
+            return send_file(os.path.join(app.config['CSV_FOLDER'], filename.replace('.pdf', '')+'.csv'))
             # return redirect(url_for('uploaded_file',filename=filename))
     return '''
     <!doctype html>
