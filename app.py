@@ -1,4 +1,5 @@
 from flask import Flask, render_template, jsonify, request, redirect, url_for, flash
+from flask import send_from_directory
 
 import requests, time, json, pdfminer
 import pandas as pd
@@ -43,6 +44,11 @@ def upload_file():
       <input type=submit value=Upload>
     </form>
     '''
+
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'],
+                               filename)
 
 
 @app.route('/')
