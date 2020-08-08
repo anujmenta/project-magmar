@@ -23,23 +23,24 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def page_to_csv(purifieddict, category, region, usagetype):
-	  csv_appender = []
-	  # print(defaultxpos)
-	  for key in purifieddict:
-	    lin = sorted(purifieddict[key], key=lambda x: float(x[2]))
-	    if len(lin)==2:
-	      if float(lin[0][2])==defaultxpos[0]:
-	        category = lin[0][0]
-	      elif float(lin[0][2])==defaultxpos[1]:
-	        region = lin[0][0]
-	      elif float(lin[0][2])==defaultxpos[2]:
-	        usagetype = lin[0][0]
-	    elif len(lin)==3:
-	      # print(category, region, usagetype)
-	      # print(' '.join([x[0] for x in purifieddict[key]]))
-	      if category and region and usagetype:
-	        csv_appender.append([category, region, usagetype]+[x[0] for x in sorted(purifieddict[key], key=lambda x: float(x[2]))])
-	  return [csv_appender, category, region, usagetype]
+	print(category, region, usagetype)
+	csv_appender = []
+	# print(defaultxpos)
+	for key in purifieddict:
+	lin = sorted(purifieddict[key], key=lambda x: float(x[2]))
+	if len(lin)==2:
+	  if float(lin[0][2])==defaultxpos[0]:
+	    category = lin[0][0]
+	  elif float(lin[0][2])==defaultxpos[1]:
+	    region = lin[0][0]
+	  elif float(lin[0][2])==defaultxpos[2]:
+	    usagetype = lin[0][0]
+	elif len(lin)==3:
+	  # print(category, region, usagetype)
+	  # print(' '.join([x[0] for x in purifieddict[key]]))
+	  if category and region and usagetype:
+	    csv_appender.append([category, region, usagetype]+[x[0] for x in sorted(purifieddict[key], key=lambda x: float(x[2]))])
+	return [csv_appender, category, region, usagetype]
 
 def process_pdf(filename):
 	filename = filename.replace('.pdf', '')
@@ -49,9 +50,6 @@ def process_pdf(filename):
 	os.system('pdf2txt.py -o {} {}'.format(xml_file_path, pdf_file_path))
 	soup = BeautifulSoup(open('{}'.format(xml_file_path)).read())
 
-	print(os.listdir('uploads'))
-	print(os.listdir('xml_files'))
-	print(os.listdir('csv_files'))
 	master_csv = []
 	pageno = 0
 	category = ''
@@ -109,6 +107,9 @@ def upload_file():
 
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             process_pdf(filename)
+            print(os.listdir('uploads'))
+			print(os.listdir('xml_files'))
+			print(os.listdir('csv_files'))
             return send_file(os.path.join(app.config['CSV_FOLDER'], filename.replace('.pdf', '')+'.csv'))
             # return redirect(url_for('uploaded_file',filename=filename))
     return '''
