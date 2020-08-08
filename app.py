@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, request, redirect, url_for, flash
+from flask import Flask, render_template, jsonify, request, redirect, url_for, flash, send_file
 from flask import send_from_directory
 
 import requests, time, json, pdfminer
@@ -104,8 +104,8 @@ def upload_file():
 
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             process_pdf(filename)
-            return redirect(url_for('uploaded_file',
-                                    filename=filename))
+            return send_file(os.path.join(app.config['UPLOAD_FOLDER'], filename.replace('.pdf', '.csv')))
+            # return redirect(url_for('uploaded_file',filename=filename))
     return '''
     <!doctype html>
     <title>Upload new File</title>
