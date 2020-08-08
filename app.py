@@ -41,8 +41,11 @@ def page_to_csv(purifieddict, category, region, usagetype):
 
 def process_pdf(filename):
 	filename = filename.replace('.pdf', '')
-	os.system('pdf2txt.py -o {}.xml {}.pdf'.format(filename, filename))
-	soup = BeautifulSoup(open('{}.xml'.format(filename)).read())
+	xml_file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename, '.xml')
+	pdf_file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename, '.pdf')
+	csv_file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename, '.csv')
+	os.system('pdf2txt.py -o {} {}'.format(xml_file_path, pdf_file_path))
+	soup = BeautifulSoup(open('{}.xml'.format(xml_file_path)).read())
 
 	defaultxpos = ['76.074', '85.272', '86.191']
 
@@ -84,7 +87,7 @@ def process_pdf(filename):
 	  master_csv+=result
 
 	df = pd.DataFrame(master_csv, columns=['Category', 'Region', 'Usagetype', 'Description', 'Quantity', 'Cost'])
-	df.to_csv('{}.csv'.format(filename), index=None)
+	df.to_csv('{}'.format(csv_file_path), index=None)
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
