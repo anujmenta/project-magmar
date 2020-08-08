@@ -3,6 +3,8 @@ from flask import send_from_directory
 
 import requests, time, json, pdfminer
 import pandas as pd
+from bs4 import BeautifulSoup
+import re
 import os
 import collections
 from werkzeug.utils import secure_filename
