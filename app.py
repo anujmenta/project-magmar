@@ -2,6 +2,7 @@ from flask import Flask, render_template, jsonify, request
 
 import requests, time, json, pdfminer
 import pandas as pd
+import os
 import collections
 from werkzeug.utils import secure_filename
 
