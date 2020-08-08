@@ -84,14 +84,11 @@ def process_pdf(filename):
 	  list_mastersamples.append(mastersample)
 
 	defaultxpos = [x[0] for x in collections.Counter(xlist).most_common(3)][::-1]
-	print(list_mastersamples)
 	for mastersample in list_mastersamples:
 	  result, category, region, usagetype = page_to_csv(mastersample, category, region, usagetype)
 	  master_csv+=result
 
 	df = pd.DataFrame(master_csv, columns=['Category', 'Region', 'Usagetype', 'Description', 'Quantity', 'Cost'])
-	print(df.head())
-	print(master_csv[:10])
 	df.to_csv('{}'.format(csv_file_path), index=None)
 
 @app.route('/upload', methods=['GET', 'POST'])
