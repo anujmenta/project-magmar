@@ -105,7 +105,7 @@ def upload_file():
             print(os.listdir('uploads'))
             print(os.listdir('xml_files'))
             print(os.listdir('csv_files'))
-            return send_file(os.path.join(app.config['CSV_FOLDER'], filename.replace('.pdf', '')+'.csv'))
+            return send_file(os.path.join(app.config['CSV_FOLDER'], filename.replace('.pdf', '')+'.csv'), as_attachment=True)
             # return redirect(url_for('uploaded_file',filename=filename))
     return '''
     <!doctype html>
