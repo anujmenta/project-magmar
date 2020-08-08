@@ -12,10 +12,77 @@ ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['FILENAME'] = ''
 
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def page_to_csv(purifieddict, category, region, usagetype):
+	  csv_appeneder = []
+	  # print(defaultxpos)
+	  for key in purifieddict:
+	    lin = sorted(purifieddict[key], key=lambda x: float(x[2]))
+	    if len(lin)==2:
+	      if float(lin[0][2])==defaultxpos[0]:
+	        category = lin[0][0]
+	      elif float(lin[0][2])==defaultxpos[1]:
+	        region = lin[0][0]
+	      elif float(lin[0][2])==defaultxpos[2]:
+	        usagetype = lin[0][0]
+	    elif len(lin)==3:
+	      # print(category, region, usagetype)
+	      # print(' '.join([x[0] for x in purifieddict[key]]))
+	      if category and region and usagetype:
+	        csv_appeneder.append([category, region, usagetype]+[x[0] for x in sorted(purifieddict[key], key=lambda x: float(x[2]))])
+	  return [csv_appeneder, category, region, usagetype]
+
+def process_pdf(filename):
+	filename = filename.replace('.pdf', '')
+	os.system('pdf2txt.py -o {}.xml {}.pdf'.format(filename, filename))
+	soup = BeautifulSoup(open('{}.xml'.format(filename)).read())
+
+	defaultxpos = ['76.074', '85.272', '86.191']
+
+	master_csv = []
+	pageno = 0
+	category = ''
+	region = ''
+	usagetype = ''
+	xset = set()
+	xlist = []
+	list_mastersamples = []
+
+
+	for page in soup.find_all('page'):
+	  pageno+=1
+	  mastersample = collections.defaultdict(list)
+	  for box in page.find_all('textbox'):
+	    tmp = []
+	    for line in box.find_all('textline'):
+	      y_val = line.find('text')['bbox'].split(',')[1]
+	      x_val = line.find('text')['bbox'].split(',')[0]
+	      size = line.find('text')['size']
+	      value = ''.join([i.text for i in line.find_all('text')])
+	      if value.encode('utf-8')!='' and value.encode('utf-8')!='\xc2\xa0\n' and 'Page' not in value:
+	        tmp.append([value.encode('utf-8').decode('utf-8','ignore').replace(u'\xa0', u' ').replace(u'\xb7', u'').strip(), y_val, x_val, size])
+	    if tmp:
+	      for t in tmp:
+	        sent, y, x, size = t
+	        mastersample[float(y)].append([sent, y, x, size])
+	        if float(x)<100:
+	          xset.add(float(x))
+	          xlist.append(float(x))
+	  list_mastersamples.append(mastersample)
+
+	defaultxpos = [x[0] for x in collections.Counter(xlist).most_common(3)][::-1]
+
+	for mastersample in list_mastersamples:
+	  result, category, region, usagetype = page_to_csv(mastersample, category, region, usagetype)
+	  master_csv+=result
+
+	df = pd.DataFrame(master_csv, columns=['Category', 'Region', 'Usagetype', 'Description', 'Quantity', 'Cost'])
+	df.to_csv('{}.csv'.format(filename), index=None)
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
@@ -32,7 +99,9 @@ def upload_file():
             return redirect(request.url)
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
+
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            process_pdf(filename)
             return redirect(url_for('uploaded_file',
                                     filename=filename))
     return '''
