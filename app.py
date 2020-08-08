@@ -16,13 +16,11 @@ app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['XML_FOLDER'] = 'xml_files'
 app.config['CSV_FOLDER'] = 'csv_files'
 
-defaultxpos = ['76.074', '85.272', '86.191']
-
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-def page_to_csv(purifieddict, category, region, usagetype):
+def page_to_csv(purifieddict, category, region, usagetype, defaultxpos):
 	print(category, region, usagetype)
 	csv_appender = []
 	# print(defaultxpos)
@@ -50,7 +48,7 @@ def process_pdf(filename):
 	csv_file_path = os.path.join(app.config['CSV_FOLDER'], filename+'.csv')
 	os.system('pdf2txt.py -o {} {}'.format(xml_file_path, pdf_file_path))
 	soup = BeautifulSoup(open('{}'.format(xml_file_path)).read())
-
+	defaultxpos = ['76.074', '85.272', '86.191']
 	master_csv = []
 	pageno = 0
 	category = ''
@@ -84,7 +82,7 @@ def process_pdf(filename):
 
 	defaultxpos = [x[0] for x in collections.Counter(xlist).most_common(3)][::-1]
 	for mastersample in list_mastersamples:
-	  result, category, region, usagetype = page_to_csv(mastersample, category, region, usagetype)
+	  result, category, region, usagetype = page_to_csv(mastersample, category, region, usagetype, defaultxpos)
 	  master_csv+=result
 
 	df = pd.DataFrame(master_csv, columns=['Category', 'Region', 'Usagetype', 'Description', 'Quantity', 'Cost'])
