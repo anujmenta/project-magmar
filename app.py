@@ -40,6 +40,7 @@ def page_to_csv(purifieddict, category, region, usagetype):
 	  # print(' '.join([x[0] for x in purifieddict[key]]))
 	  if category and region and usagetype:
 	    csv_appender.append([category, region, usagetype]+[x[0] for x in sorted(purifieddict[key], key=lambda x: float(x[2]))])
+	print(category, region, usagetype)
 	return [csv_appender, category, region, usagetype]
 
 def process_pdf(filename):
