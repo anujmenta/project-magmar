@@ -23,7 +23,7 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def page_to_csv(purifieddict, category, region, usagetype):
-	  csv_appeneder = []
+	  csv_appender = []
 	  # print(defaultxpos)
 	  for key in purifieddict:
 	    lin = sorted(purifieddict[key], key=lambda x: float(x[2]))
@@ -38,8 +38,8 @@ def page_to_csv(purifieddict, category, region, usagetype):
 	      # print(category, region, usagetype)
 	      # print(' '.join([x[0] for x in purifieddict[key]]))
 	      if category and region and usagetype:
-	        csv_appeneder.append([category, region, usagetype]+[x[0] for x in sorted(purifieddict[key], key=lambda x: float(x[2]))])
-	  return [csv_appeneder, category, region, usagetype]
+	        csv_appender.append([category, region, usagetype]+[x[0] for x in sorted(purifieddict[key], key=lambda x: float(x[2]))])
+	  return [csv_appender, category, region, usagetype]
 
 def process_pdf(filename):
 	filename = filename.replace('.pdf', '')
@@ -49,6 +49,9 @@ def process_pdf(filename):
 	os.system('pdf2txt.py -o {} {}'.format(xml_file_path, pdf_file_path))
 	soup = BeautifulSoup(open('{}'.format(xml_file_path)).read())
 
+	print(os.listdir('uploads'))
+	print(os.listdir('xml_files'))
+	print(os.listdir('csv_files'))
 	master_csv = []
 	pageno = 0
 	category = ''
@@ -81,7 +84,7 @@ def process_pdf(filename):
 	  list_mastersamples.append(mastersample)
 
 	defaultxpos = [x[0] for x in collections.Counter(xlist).most_common(3)][::-1]
-
+	print(list_mastersamples)
 	for mastersample in list_mastersamples:
 	  result, category, region, usagetype = page_to_csv(mastersample, category, region, usagetype)
 	  master_csv+=result
