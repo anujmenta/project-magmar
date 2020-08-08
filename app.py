@@ -108,8 +108,8 @@ def upload_file():
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             process_pdf(filename)
             print(os.listdir('uploads'))
-			print(os.listdir('xml_files'))
-			print(os.listdir('csv_files'))
+            print(os.listdir('xml_files'))
+            print(os.listdir('csv_files'))
             return send_file(os.path.join(app.config['CSV_FOLDER'], filename.replace('.pdf', '')+'.csv'))
             # return redirect(url_for('uploaded_file',filename=filename))
     return '''
