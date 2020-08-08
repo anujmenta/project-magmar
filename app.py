@@ -81,6 +81,7 @@ def process_pdf(filename):
 	  list_mastersamples.append(mastersample)
 
 	defaultxpos = [x[0] for x in collections.Counter(xlist).most_common(3)][::-1]
+	print(defaultxpos)
 	for mastersample in list_mastersamples:
 	  result, category, region, usagetype = page_to_csv(mastersample, category, region, usagetype, defaultxpos)
 	  master_csv+=result
