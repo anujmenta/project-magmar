@@ -87,6 +87,8 @@ def process_pdf(filename):
 	  master_csv+=result
 
 	df = pd.DataFrame(master_csv, columns=['Category', 'Region', 'Usagetype', 'Description', 'Quantity', 'Cost'])
+	print(df.head())
+	print(master_csv[:10])
 	df.to_csv('{}'.format(csv_file_path), index=None)
 
 @app.route('/upload', methods=['GET', 'POST'])
