@@ -41,11 +41,11 @@ def page_to_csv(purifieddict, category, region, usagetype):
 
 def process_pdf(filename):
 	filename = filename.replace('.pdf', '')
-	xml_file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename, '.xml')
-	pdf_file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename, '.pdf')
-	csv_file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename, '.csv')
+	xml_file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename+'.xml')
+	pdf_file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename+'.pdf')
+	csv_file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename+'.csv')
 	os.system('pdf2txt.py -o {} {}'.format(xml_file_path, pdf_file_path))
-	soup = BeautifulSoup(open('{}.xml'.format(xml_file_path)).read())
+	soup = BeautifulSoup(open('{}'.format(xml_file_path)).read())
 
 	defaultxpos = ['76.074', '85.272', '86.191']
 
