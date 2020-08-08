@@ -34,7 +34,7 @@ def page_to_csv(purifieddict, category, region, usagetype, defaultxpos):
 				usagetype = lin[0][0]
 		elif len(lin)==3:
 			if category and region and usagetype:
-			csv_appender.append([category, region, usagetype]+[x[0] for x in sorted(purifieddict[key], key=lambda x: float(x[2]))])
+				csv_appender.append([category, region, usagetype]+[x[0] for x in sorted(purifieddict[key], key=lambda x: float(x[2]))])
 	print(category, region, usagetype)
 	return [csv_appender, category, region, usagetype]
 
