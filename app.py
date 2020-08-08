@@ -27,7 +27,7 @@ def page_to_csv(purifieddict, category, region, usagetype):
 	csv_appender = []
 	# print(defaultxpos)
 	for key in purifieddict:
-	lin = sorted(purifieddict[key], key=lambda x: float(x[2]))
+		lin = sorted(purifieddict[key], key=lambda x: float(x[2]))
 	if len(lin)==2:
 	  if float(lin[0][2])==defaultxpos[0]:
 	    category = lin[0][0]
