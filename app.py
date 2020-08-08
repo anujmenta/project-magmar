@@ -75,7 +75,7 @@ def process_pdf(filename):
 	      for t in tmp:
 	        sent, y, x, size = t
 	        mastersample[float(y)].append([sent, y, x, size])
-	        if float(x)<100:
+	        if float(x)<100 and float(x)>30:
 	          xset.add(float(x))
 	          xlist.append(float(x))
 	  list_mastersamples.append(mastersample)
