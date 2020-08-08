@@ -16,6 +16,8 @@ app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['FILENAME'] = ''
 
+defaultxpos = ['76.074', '85.272', '86.191']
+
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -46,8 +48,6 @@ def process_pdf(filename):
 	csv_file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename+'.csv')
 	os.system('pdf2txt.py -o {} {}'.format(xml_file_path, pdf_file_path))
 	soup = BeautifulSoup(open('{}'.format(xml_file_path)).read())
-
-	defaultxpos = ['76.074', '85.272', '86.191']
 
 	master_csv = []
 	pageno = 0
